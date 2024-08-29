@@ -56,9 +56,45 @@ public class AhorcadoController {
         }
 
         String palabraSeleccionada = palabrasFiltradas.get(new Random().nextInt(palabrasFiltradas.size()));
+        String palabraOculta = "-".repeat(palabraSeleccionada.length()); // Inicializa con guiones bajos
 
-        model.addAttribute("palabra", palabraSeleccionada);
+        model.addAttribute("palabraOculta", palabraOculta);
+        model.addAttribute("palabraSeleccionada", palabraSeleccionada);
         model.addAttribute("intentos", intentos);
+
+        return "juego";
+    }
+    @PostMapping("/adivinar-letra")
+    public String adivinarLetra(@RequestParam("letra") char letra,
+                                @RequestParam("palabraOculta") String palabraOculta,
+                                @RequestParam("palabraSeleccionada") String palabraSeleccionada,
+                                @RequestParam("intentos") int intentos,
+                                Model model) {
+        StringBuilder nuevaPalabraOculta = new StringBuilder(palabraOculta);
+        boolean letraEncontrada = false;
+
+        for (int i = 0; i < palabraSeleccionada.length(); i++) {
+            if (palabraSeleccionada.charAt(i) == letra) {
+                nuevaPalabraOculta.setCharAt(i, letra);
+                letraEncontrada = true;
+            }
+        }
+
+        if (!letraEncontrada) {
+            intentos--;
+        }
+
+        model.addAttribute("palabraSeleccionada", palabraSeleccionada);
+        model.addAttribute("palabraOculta", nuevaPalabraOculta.toString());
+        model.addAttribute("intentos", intentos);
+
+        if (nuevaPalabraOculta.toString().equals(palabraSeleccionada)) {
+            model.addAttribute("mensaje", "¡Felicidades! Has adivinado la palabra.");
+            return "resultado";
+        } else if (intentos <= 0) {
+            model.addAttribute("mensaje", "Lo siento, has perdido. La palabra era: " + palabraSeleccionada);
+            return "resultado";
+        }
 
         return "juego";
     }

@@ -1,14 +1,25 @@
 <!DOCTYPE html>
-<html lang="en">
-<html xmlns:th="http://www.thymeleaf.org">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <title>Juego de Ahorcado</title>
 </head>
 <body>
-    <h1>Juego de Ahorcado</h1>
-    <p>Palabra a Adivinar: <span th:text="${palabra}"></span></p>
-    <p>Intentos Restantes: <span th:text="${intentos}"></span></p>
-    <!-- Aquí iría la lógica para ingresar letras y adivinar la palabra -->
+<h1>Juego de Ahorcado</h1>
+<p>Palabra a Adivinar: <span th:text="${palabraOculta}"></span></p>
+<p>Intentos Restantes: <span th:text="${intentos}"></span></p>
+
+<form action="/adivinar-letra" method="post">
+    <input type="hidden" name="palabraOculta" th:value="${palabraOculta}">
+    <input type="hidden" name="palabraSeleccionada" th:value="${palabraSeleccionada}">
+    <input type="hidden" name="intentos" th:value="${intentos}">
+
+    <label for="letra">Ingrese una letra:</label>
+    <input type="text" id="letra" name="letra" maxlength="1" required><br>
+
+    <button type="submit">Adivinar Letra</button>
+</form>
+
+<p th:if="${mensaje}" th:text="${mensaje}"></p>
 </body>
 </html>
